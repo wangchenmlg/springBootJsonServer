@@ -1,3 +1,4 @@
 
-1¡¢maven ¹¤³ÌÅäÖÃ²ÎÊı  clean package spring-boot:run
+1ã€å¯åŠ¨maven å·¥ç¨‹å¿…è¦å‚æ•°ï¼š
+  clean package spring-boot:run
 
