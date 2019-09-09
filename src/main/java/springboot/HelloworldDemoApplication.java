@@ -12,7 +12,6 @@ public class HelloworldDemoApplication implements EmbeddedServletContainerCustom
     }
 
     public void customize(ConfigurableEmbeddedServletContainer container) {
-        // TODO 自动生成的方法存根
         container.setPort(8088);
     }
 }
