@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Resource;
+import javax.naming.ldap.Rdn;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -27,10 +27,13 @@ public class HelloworldRestController {
 	private TestMapper mapper;
 	
 	private static Logger logger = LoggerFactory.getLogger(HelloworldRestController.class);
-	private Logger testLog = LoggerFactory.getLogger("mytest");
+//	private Logger testLog = LoggerFactory.getLogger("mytest");  //todo: valid
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+    
+    @Autowired
+    private RedisUtil redis;
 	
     @RequestMapping("/")
     public String helloworld(){
@@ -47,6 +50,7 @@ public class HelloworldRestController {
         logger.error("这是 error 日志...");
         
     	stringRedisTemplate.opsForValue().set("key-redis", roncooUser.getName());
+    	redis.set("key-redis2", roncooUser.getCreateTime());
     	logger.info("set the redis test value is:" + roncooUser.getName());
         
         return "hello world, welcome to the spring boot everiment.";
@@ -60,7 +64,9 @@ public class HelloworldRestController {
     	res.put("china", "中文の测试！~~~~");
     	res.put("request", MapUtil.getParaMap(request));
     	
-    	logger.info("get the redis[key-redis] is " + stringRedisTemplate.opsForValue().get("key-redis"));
+    	logger.info("get the redis[key-redis][key-redis2] is " + stringRedisTemplate.opsForValue().get("key-redis") + " || " + redis.get("key-redis2"));
+    	logger.info("check redis has key [key-redis（this is orgin source,warning）] [key-redis1] [key-redis2] is :" + redis.hasKey("key-redis") + " || " + 
+    			redis.hasKey("key-redis1") + " || " + redis.hasKey("key-redis2"));
     	
     	return res;
     }
