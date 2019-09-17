@@ -52,6 +52,10 @@ public class HelloworldRestController {
     	stringRedisTemplate.opsForValue().set("key-redis", roncooUser.getName());
     	redis.set("key-redis2", roncooUser.getCreateTime());
     	logger.info("set the redis test value is:" + roncooUser.getName());
+    	logger.info("start incre the redis [incre]:" + redis.incr("incre", 2));
+    	logger.info("start decre the redis [incre]:" + redis.decr("incre", 1));
+    	
+    	redisMapTest("putin");
         
         return "hello world, welcome to the spring boot everiment.";
     }
@@ -65,9 +69,36 @@ public class HelloworldRestController {
     	res.put("request", MapUtil.getParaMap(request));
     	
     	logger.info("get the redis[key-redis][key-redis2] is " + stringRedisTemplate.opsForValue().get("key-redis") + " || " + redis.get("key-redis2"));
-    	logger.info("check redis has key [key-redis（this is orgin source,warning）] [key-redis1] [key-redis2] is :" + redis.hasKey("key-redis") + " || " + 
+    	logger.info("check redis has key [key-redis(this is orgin source,warning)] [key-redis1] [key-redis2] is :" + redis.hasKey("key-redis") + " || " + 
     			redis.hasKey("key-redis1") + " || " + redis.hasKey("key-redis2"));
+
+    	redisMapTest("result");
     	
     	return res;
     }
+	
+	private void redisMapTest(String tag) {
+		if(tag.equals("putin")){
+			logger.info("==================map redis input start========================");
+			Map<String, Object> tmp = new HashMap<String, Object>();
+			tmp.put("key1", "zhangsan");
+			tmp.put("key2", "lisi");
+			tmp.put("key3", "wangwu");
+			redis.hmset("mapTest", tmp);
+			logger.info("has insert the redis map[mapTest]:" + tmp);
+			redis.hset("mapTest", "key4", "zhaoliu");
+			logger.info("has inset the one key map item[key4]:zhaoliu.");
+			redis.hdel("mapTest", "key1", "key2");
+			logger.info("has del some redis map item key1 key2!~");
+			logger.info("==================map redis input end========================");
+		}else{
+			logger.info("==================map redis result start========================");
+			Map<Object, Object> tmp = redis.hmget("mapTest");
+			logger.info("get the map redis with key[mapTest]:" + tmp);
+			logger.info("has the key with map redis[key-redis2(use set mothod)][mapTest][mapTest|key1][mapTest|key3]:" + 
+					redis.hasKey("key-redis2") + " || " + redis.hasKey("mapTest") + " || " + redis.hHasKey("mapTest","key1") + 
+					" || " + redis.hHasKey("mapTest","key3"));
+			logger.info("==================map redis result end========================");
+		}
+	}
 }
