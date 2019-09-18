@@ -4,7 +4,9 @@ import java.text.SimpleDateFormat;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.naming.ldap.Rdn;
 import javax.servlet.http.HttpServletRequest;
@@ -56,6 +58,7 @@ public class HelloworldRestController {
     	logger.info("start decre the redis [incre]:" + redis.decr("incre", 1));
     	
     	redisMapTest("putin");
+    	redisSetTest("putin");
         
         return "hello world, welcome to the spring boot everiment.";
     }
@@ -73,9 +76,33 @@ public class HelloworldRestController {
     			redis.hasKey("key-redis1") + " || " + redis.hasKey("key-redis2"));
 
     	redisMapTest("result");
+    	redisSetTest("result");
     	
     	return res;
     }
+	
+	private void redisSetTest(String tag){
+		if(tag.equals("putin")){
+			logger.info("==================set redis input start========================");
+			Set<Object> tmp = new HashSet<Object>();
+			tmp.add("zhangsan");
+			tmp.add("lisi");
+			tmp.add("wangwu");
+			redis.sSet("setTest", tmp, "wangwu", "zhaoliu", "lisi", "zhangsan");
+			logger.info("has set the new set:" + tmp);
+			logger.info("==================set redis input end========================");
+		}else{
+			logger.info("==================set redis result start========================");
+			Set<Object> tmp = redis.sGet("setTest");
+			logger.info("has get the new set is:" + tmp + " and ths size is:" + redis.sGetSetSize("setTest"));
+			redis.setRemove("setTest", "lisi", "wangwu");
+			tmp = redis.sGet("setTest");
+			logger.info("after delete the set key wangwu ,lisi then the set is:" + tmp);
+			logger.info("then the key exist check [wangwu][zhaoliu] is " + 
+					redis.sHasKey("setTest", "wngwu") + " | " + redis.sHasKey("setTest", "zhaoliu"));
+			logger.info("==================set redis result end========================");
+		}
+	}
 	
 	private void redisMapTest(String tag) {
 		if(tag.equals("putin")){
