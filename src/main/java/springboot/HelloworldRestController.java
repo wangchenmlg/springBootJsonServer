@@ -1,10 +1,11 @@
 package springboot;
 
 import java.text.SimpleDateFormat;
-
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -59,6 +60,7 @@ public class HelloworldRestController {
     	
     	redisMapTest("putin");
     	redisSetTest("putin");
+    	redisListTest("putin");
         
         return "hello world, welcome to the spring boot everiment.";
     }
@@ -77,9 +79,31 @@ public class HelloworldRestController {
 
     	redisMapTest("result");
     	redisSetTest("result");
+    	redisListTest("result");
     	
     	return res;
     }
+	
+	private void redisListTest(String tag){
+		if(tag.equals("putin")){
+			logger.info("==================list redis input start========================");
+			redis.lRemoveAll("listTest");
+			List<Object> tmp = new ArrayList<Object>();
+			tmp.add("zhangsan");
+			tmp.add("lisi");
+			tmp.add("wangwu");
+			redis.lSet("listTest", tmp);
+			logger.info("has set the list obj:" + tmp);
+			redis.lPush("listTest", "zhaoliu", "fengqi", "cuiba");
+			logger.info("==================list redis input end========================");
+		}else{
+			logger.info("==================list redis result start========================");
+			List<Object> tmp = redis.lGet("listTest", 0, -1);
+			logger.info("get the list obj is :" + tmp + " \r\n and the size is:" + redis.lGetListSize("listTest") + 
+					" and the space data is:" + redis.lGet("listTest", 0, 3));
+			logger.info("==================list redis result end========================");
+		}
+	}
 	
 	private void redisSetTest(String tag){
 		if(tag.equals("putin")){
