@@ -81,6 +81,9 @@ public class HelloworldRestController {
     	redisSetTest("result");
     	redisListTest("result");
     	
+    	List<Object> lsTmp = mapper.queryRoncooUser();
+    	logger.info("the db list select is:" + lsTmp);
+    	
     	return res;
     }
 	

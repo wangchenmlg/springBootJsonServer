@@ -1,5 +1,7 @@
 package springboot;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Results;
@@ -15,4 +17,6 @@ public interface TestMapper {
 	@Select(value = "select id, name, create_time from roncoo_user where id = #{id,jdbcType=INTEGER}")
 	@Results(value = {@Result (column = "create_time", property = "createTime", jdbcType = JdbcType.TIMESTAMP) })
 	RoncooUser selectByPrimaryKey(Integer id);
+	
+	List<Object> queryRoncooUser();
 }
