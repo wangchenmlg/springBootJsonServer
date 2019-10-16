@@ -29,7 +29,7 @@ public class PublishController {
             jms.convertAndSend(queue, "queue"+i);
         }
 
-        return "queue ·¢ËÍ³É¹¦";
+        return "queue send successful";
     }
 
     @JmsListener(destination = "out.queue")
