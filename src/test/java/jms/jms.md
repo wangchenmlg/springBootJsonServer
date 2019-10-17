@@ -1,4 +1,5 @@
 https://www.iteye.com/blog/langgufu-2157403
+https://www.jb51.net/article/131797.htm
 
 1、JMS是一个由AS提供的Message服务。它能接受消息产生者(Message Provider)所发出的消息，并把消息转发给消息消费者(Message  Consumer)。 
 2、JMS提供2种类型的消息服务：(1)Queue，即点对点，每个消息只转发给一个消息消费者使用。(2)Topic，即发布和订阅，每个消息可以转发给所有的订阅者(消费者)。 

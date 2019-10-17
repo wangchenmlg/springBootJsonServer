@@ -1,57 +1,46 @@
 package jms;
 
 import java.util.*;
-import javax.naming.*;
-import javax.jms.*;
-import javax.jms.Queue;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+
+import org.apache.activemq.ActiveMQConnectionFactory;
+
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
+import javax.jms.TextMessage;
 
 public class MessageProducter {
-  public static void main(String[] args) {
-    String queueConnectionFactoryName = "myjmsconnectionfactory"; //JMS Connection Factory的JNDI
-    String queueName = "myjmsqueue"; //JMS Queue或者JMS Topic的JNDI
+	private static final String URL = "tcp://10.177.98.16:61616";
+	private static final String QUEUE_NAME = "queue-name";
 
-    boolean transacted = false;//transaction模式
-    int acknowledgementMode = Session.AUTO_ACKNOWLEDGE;//acknowledgement模式
-    String message="Message need to send";//模拟需要发送的消息
-
-    Properties properties = new Properties();
-    properties.put(Context.INITIAL_CONTEXT_FACTORY,"weblogic.jndi.WLInitialContextFactory");
-    properties.put(Context.PROVIDER_URL, "t3://localhost:7001");
-
-    try {
-      Context context = new InitialContext(properties);
-      Object obj = context.lookup(queueConnectionFactoryName);
-      QueueConnectionFactory queueConnectionFactory = (QueueConnectionFactory) obj;//JMS Connection Factory的获得
-     
-      obj = context.lookup(queueName);
-      Queue queue = (Queue) obj;//JMS Queue或者JMS Topic的获得
-
-      QueueConnection queueConnection=queueConnectionFactory.createQueueConnection();//产生连接
-      queueConnection.start();
-      QueueSession queueSession = queueConnection.createQueueSession(transacted, acknowledgementMode);
-      TextMessage textMessage = queueSession.createTextMessage();
-      textMessage.clearBody();
-      textMessage.setText(message);
-      QueueSender queueSender = queueSession.createSender(queue);
-      queueSender.send(textMessage);
-      if (transacted) {
-        queueSession.commit();
-      }
-
-      if (queueSender != null) {
-        queueSender.close();
-      }
-      if (queueSession != null) {
-        queueSession.close();
-      }
-      if (queueConnection != null) {
-        queueConnection.close();
-      }
-
-    }
-    catch(Exception ex){
-      ex.printStackTrace();
-    }
-  }
+	public static void main(String[] args) throws JMSException {
+		// 1 创建连接工厂ConnectionFactory
+		ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(URL);
+		// 2 使用连接工厂创建连接
+		Connection connection = connectionFactory.createConnection();
+		// 3 启动连接
+		connection.start();
+		// 4 创建会话
+		Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+		// 5 创建消息发送的目的地
+		Destination destination = session.createQueue(QUEUE_NAME);
+		// 6 创建生产者
+		MessageProducer messageProducer = session.createProducer(destination);
+		// 7 创建消息
+		TextMessage textMessage = session.createTextMessage();
+		for (int i = 1; i <= 100; i++) {
+			// 8 创建消息内容
+			textMessage.setText("发送者- 1 -发送消息：" + i);
+			// 9 发送消息
+			messageProducer.send(textMessage);
+		}
+		System.out.println("消息发送成功");
+		session.close();
+		connection.close();
+	}
 }
-
