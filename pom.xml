@@ -58,6 +58,12 @@
 		     <version>5.14.5</version>
 		</dependency>
 		
+		<dependency>
+		    <groupId>org.apache.solr</groupId>
+		    <artifactId>solr-solrj</artifactId>
+		    <version>8.2.0</version>
+		</dependency>
+		
 	</dependencies>
 	<build>
 		<plugins>

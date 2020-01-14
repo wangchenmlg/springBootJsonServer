@@ -26,7 +26,8 @@ logging.pattern.file= # Appender pattern for output to a file. Supported only wi
 logging.pattern.level=%5p # Appender pattern for log level. Supported only with the default Logback setup.
 logging.register-shutdown-hook=false # Register a shutdown hook for the logging system when it is initialized.
 
-
+4、配置solr的非自动配置功能项，函数入口中添加：
+@SpringBootApplication(exclude = SolrAutoConfiguration.class)
 
   
 
